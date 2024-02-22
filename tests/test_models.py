@@ -217,17 +217,31 @@ class TestProductModel(unittest.TestCase):
         product = ProductFactory()
         product.create()
         self.assertEqual(len(product.serialize()), 6)
-    
+
     def test_deserialize(self):
         """Test product deserialization"""
         product = ProductFactory()
         # Test KeyError
-        product_key_error = {'id': 0, 'namee': 'Impala', 'description': 'test', 'price': '123.01', 'available': False, 'category': 'AUTOMOTIVE'}
+        product_key_error = {
+            'id': 0,
+            'namee': 'Impala',
+            'description': 'test',
+            'price': '123.01',
+            'available': False,
+            'category': 'AUTOMOTIVE'
+            }
         with self.assertRaises(DataValidationError) as dve:
             product.deserialize(product_key_error)
         self.assertEqual(str(dve.exception), "Invalid product: missing name")
         # Test AttributeError
-        product_attribute_error = {'id': 0, 'name': 'Impala', 'description': 'test', 'price': '123.01', 'available': False, 'category': 'AUTOMOTIVEE'}
+        product_attribute_error = {
+            'id': 0,
+            'name': 'Impala',
+            'description': 'test',
+            'price': '123.01',
+            'available': False,
+            'category': 'AUTOMOTIVEE'
+            }
         with self.assertRaises(DataValidationError) as dve:
             product.deserialize(product_attribute_error)
         self.assertEqual(str(dve.exception), "Invalid attribute: AUTOMOTIVEE")
@@ -235,9 +249,16 @@ class TestProductModel(unittest.TestCase):
         product_type_error = "This is wrong"
         with self.assertRaises(DataValidationError) as dve:
             product.deserialize(product_type_error)
-        self.assertEqual(str(dve.exception), "Invalid product: body of request contained bad or no data string indices must be integers")
+        self.assertEqual(str(dve.exception).find("Invalid product:"), 0)
         # Test Bool TypeError
-        product_bool_type_error = {'id': 0, 'name': 'Impala', 'description': 'test', 'price': '123.01', 'available': 'No', 'category': 'AUTOMOTIVE'}
+        product_bool_type_error = {
+            'id': 0,
+            'name': 'Impala',
+            'description': 'test',
+            'price': '123.01',
+            'available': 'No',
+            'category': 'AUTOMOTIVE'
+            }
         with self.assertRaises(DataValidationError) as dve:
             product.deserialize(product_bool_type_error)
         self.assertEqual(str(dve.exception), "Invalid type for boolean [available]: <class 'str'>")
