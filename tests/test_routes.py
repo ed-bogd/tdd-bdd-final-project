@@ -270,10 +270,19 @@ class TestProductRoutes(TestCase):
         for product in data:
             self.assertEqual(product["available"], True)
 
+    def test_unallowed_method(self):
+        """Test unallowed method [PATCH]"""
+        response = self.client.patch(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_internal_error(self):
+        """Test internal server error method"""
+        response = self.client.get(f"{BASE_URL}/error_500")
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     ######################################################################
     # Utility functions
     ######################################################################
-
     def get_product_count(self):
         """save the current number of products"""
         response = self.client.get(BASE_URL)

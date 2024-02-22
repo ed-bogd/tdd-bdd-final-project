@@ -177,3 +177,10 @@ def delete_products(product_id):
     if product:
         product.delete()
     return "", status.HTTP_204_NO_CONTENT
+
+
+# Route for internal error
+@app.route("/products/error_500")
+def internal_error():
+    """Internal error simulation"""
+    abort(500, 'Internal error')
